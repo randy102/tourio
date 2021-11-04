@@ -1,7 +1,13 @@
 package SGU.Tourio.Services;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityExistsException;
 
@@ -10,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import SGU.Tourio.DTO.CreateEmployeeDTO;
+import SGU.Tourio.DTO.ReportEmployeeDTO;
 import SGU.Tourio.Models.Employee;
+import SGU.Tourio.Models.GroupEmployeeRel;
 import SGU.Tourio.Repositories.EmployeeRepository;
+import SGU.Tourio.Repositories.GroupEmpRelRepository;
 import SGU.Tourio.Utils.FormatString;
 
 @Service
@@ -19,8 +28,35 @@ public class EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Autowired
+    GroupEmpRelRepository groupRepository;
+
     public List<Employee> getAll() {
         return employeeRepository.findAll();
+    }
+
+    public List<ReportEmployeeDTO> getForTourReport(Optional<String> from, Optional<String> to) throws ParseException {
+        List<Employee> employees = getAll();
+        List<GroupEmployeeRel> groups;
+        if (from.isPresent() && to.isPresent()) {
+            Date fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(from.get());
+            Date toDate = new SimpleDateFormat("yyyy-MM-dd").parse(to.get());
+            groups = groupRepository.findAllByGroupDateStartBetween(fromDate, toDate);
+        } else {
+            groups = groupRepository.findAll();
+        }
+
+        List<ReportEmployeeDTO> dtoList = new ArrayList<>();
+        for (Employee employee : employees) {
+            ReportEmployeeDTO dto = new ModelMapper().map(employee, ReportEmployeeDTO.class);
+            List<GroupEmployeeRel> groupEmployeeRel = groups.stream()
+                    .filter(g -> Objects.equals(g.getEmployee().getId(), employee.getId()))
+                    .collect(Collectors.toList());
+            dto.setGroupCount(groupEmployeeRel.size());
+            dto.setJobs(String.join(", ", groupEmployeeRel.stream().map(g -> g.getJob().getName()).collect(Collectors.toList())));
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 
     public Employee get(Long id) {

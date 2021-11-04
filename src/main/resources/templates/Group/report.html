@@ -1,0 +1,42 @@
+<th:block th:insert="Layouts/main :: main(title='Group', pageName='group/report', content=~{:: .container-fluid})">
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="offset-6"></div>
+            <div th:replace="Layouts/date_range::inp"></div>
+        </div>
+
+        <th:block th:insert="Layouts/table::table(title='Group', thead=~{:: #th}, tbody=~{:: #tb})">
+            <tr id="th">
+                <th>ID</th>
+                <th>Tour</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Customers</th>
+                <th>Employees</th>
+                <th>Total Sale</th>
+                <th>Total Cost</th>
+                <th>Revenue %</th>
+                <th>Create Date</th>
+            </tr>
+
+            <th:tbody id="tb" th:each="group : ${groups}">
+                <tr>
+                    <td th:text="${group.getId()}"></td>
+                    <td th:text="${group.getTourName()}"></td>
+                    <td th:text="${group.getName()}"></td>
+                    <td th:text="${group.getTourPrice()}"></td>
+                    <td th:text="${#dates.format(group.getDateStart(), 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#dates.format(group.getDateEnd(), 'dd/MM/yyyy')}"></td>
+                    <td th:text="${group.getCustomerCount()}"></td>
+                    <td th:text="${group.getEmployeeCount()}"></td>
+                    <td th:text="${#numbers.formatCurrency(group.getTotalSale())}"></td>
+                    <td th:text="${#numbers.formatCurrency(group.getTotalCost())}"></td>
+                    <td th:text="${group.getRevenue() + '%'}"></td>
+                    <td th:text="${#dates.format(group.getCreatedAt(), 'dd/MM/yyyy')}"></td>
+                </tr>
+            </th:tbody>
+        </th:block>
+    </div>
+</th:block>

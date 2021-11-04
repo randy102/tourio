@@ -13,9 +13,20 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link active" href="#" data-toggle="collapse" data-target="#dashboard-collapse"
+           aria-expanded="true" aria-controls="dashboard">
             <i class="fas fa-fw fa-tachometer-alt fa-fw"></i>
-            <span>Dashboard</span></a>
+            <span>Report</span></a>
+        <div id="dashboard-collapse" class="collapse show" aria-labelledby="dashboard" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:classappend="${page == 'employee/report' ? 'active' : ''}"
+                   href="/employee/report">Employee Report</a>
+                <a class="collapse-item" th:classappend="${page == 'tour/report' ? 'active' : ''}"
+                   href="/tour/report">Tour Report</a>
+                <a class="collapse-item" th:classappend="${page == 'group/report' ? 'active' : ''}"
+                   href="/group/report">Group Report</a>
+            </div>
+        </div>
     </li>
 
     <!--    &lt;!&ndash; Divider &ndash;&gt;-->
@@ -103,6 +114,20 @@
         <a class="nav-link" href="/employee">
             <i class="fas fa-address-book fa-fw"></i>
             <span>Employee</span></a>
+    </li>
+
+    <!-- Nav Item - Location -->
+    <li class="nav-item" th:classappend="${page == 'group' ? 'active' : ''}">
+        <a class="nav-link" href="/group">
+            <i class="fas fa-flag fa-fw"></i>
+            <span>Group</span></a>
+    </li>
+
+    <!-- Nav Item - Tour -->
+    <li class="nav-item" th:classappend="${page == 'tour' ? 'active' : ''}">
+        <a class="nav-link" href="/tour">
+            <i class="fas fa-flag fa-fw"></i>
+            <span>Tour</span></a>
     </li>
 
     <!-- Nav Item - Location -->
